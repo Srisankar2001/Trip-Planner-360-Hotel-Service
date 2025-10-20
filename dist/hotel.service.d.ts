@@ -8,5 +8,5 @@ export declare class HotelService implements OnModuleInit {
     constructor(repo: Repository<Hotel>);
     onModuleInit(): Promise<void>;
     getAllByCountry(country: string): Promise<ResponseDto<HotelDto[] | null>>;
-    getOneByCountry(country: string, arriveTime: string): Promise<ResponseDto<HotelDto | null>>;
+    getOneByCountry(country: string, arriveTime: string): Promise<ResponseDto<HotelDto[] | null>>;
 }

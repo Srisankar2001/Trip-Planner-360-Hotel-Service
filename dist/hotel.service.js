@@ -54,8 +54,6 @@ let HotelService = class HotelService {
         return new reponseDto_dto_1.ResponseDto(true, 'Hotels Fetched Successfully', hotelList);
     }
     async getOneByCountry(country, arriveTime) {
-        console.log(country);
-        console.log(arriveTime);
         if (!country || !arriveTime) {
             return new reponseDto_dto_1.ResponseDto(false, 'Missing required query parameters', null);
         }
@@ -71,23 +69,23 @@ let HotelService = class HotelService {
             return new reponseDto_dto_1.ResponseDto(false, 'Destination Not Found', null);
         }
         const lateCheckInTime = '20:00';
-        let hotel = null;
-        let data = null;
+        let hotel = [];
+        let data;
         if (arriveTime < lateCheckInTime) {
-            data = await this.repo.findOne({
+            data = await this.repo.find({
                 where: { country: country },
                 order: { pricePerNight: 'ASC' },
             });
         }
         else {
-            data = await this.repo.findOne({
+            data = await this.repo.find({
                 where: { country: country, lateCheckin: true },
                 order: { pricePerNight: 'ASC' },
             });
         }
-        if (data) {
-            hotel = new hotel_dto_1.HotelDto(data.id, data.name, data.rating, data.pricePerNight);
-        }
+        data.forEach(item => {
+            hotel.push(new hotel_dto_1.HotelDto(item.id, item.name, item.rating, item.pricePerNight));
+        });
         return new reponseDto_dto_1.ResponseDto(true, 'Hotel Fetched Successfully', hotel);
     }
 };

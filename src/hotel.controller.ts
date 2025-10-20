@@ -18,7 +18,7 @@ export class HotelController {
   async getOneByCountry(
     @Query('country') country: string,
     @Query('arriveTime') arriveTime: string,
-  ): Promise<ResponseDto<HotelDto | null>> {
+  ): Promise<ResponseDto<HotelDto[] | null>> {
     return this.hotelService.getOneByCountry(country, arriveTime);
   }
 }

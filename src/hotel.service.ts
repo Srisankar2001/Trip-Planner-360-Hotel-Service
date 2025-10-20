@@ -55,7 +55,7 @@ export class HotelService implements OnModuleInit {
   async getOneByCountry(
     country: string,
     arriveTime: string,
-  ): Promise<ResponseDto<HotelDto | null>> {
+  ): Promise<ResponseDto<HotelDto[] | null>> {
     if (!country || !arriveTime) {
       return new ResponseDto(false, 'Missing required query parameters', null);
     }
@@ -76,23 +76,26 @@ export class HotelService implements OnModuleInit {
     }
 
     const lateCheckInTime = '20:00';
-    let hotel: HotelDto | null = null;
-    let data: HotelDto | null = null;
+    let hotel: HotelDto[] = [];
+    let data: HotelDto[];
     if (arriveTime < lateCheckInTime) {
-      data = await this.repo.findOne({
+      data = await this.repo.find({
         where: { country: country },
         order: { pricePerNight: 'ASC' },
+        take: 3,
       });
     } else {
-      data = await this.repo.findOne({
+      data = await this.repo.find({
         where: { country: country, lateCheckin: true },
         order: { pricePerNight: 'ASC' },
+        take: 3,
       });
     }
-
-    if (data) {
-      hotel = new HotelDto(data.id, data.name, data.rating, data.pricePerNight);
-    }
+    data.forEach((item) => {
+      hotel.push(
+        new HotelDto(item.id, item.name, item.rating, item.pricePerNight),
+      );
+    });
 
     return new ResponseDto(true, 'Hotel Fetched Successfully', hotel);
   }
